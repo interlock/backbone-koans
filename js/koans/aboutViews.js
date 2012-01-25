@@ -13,15 +13,37 @@ describe('About Backbone.View', function() {
         todoView.remove();
         $('#todoList').remove();
     });
-    
-    it('Views are tied to a DOM element when created, based off the property provided.', function() {
-        var tagName = 'what html element represents this view?';
+
+    describe('Views Contain Properties',function () {
+      it('View has tagName set that is used to create a DOM element', function() {
+
+          // what is the default model tag name?
+          var tagName = 'what html element represents this view?';
+          
+          expect(tagName).toEqual(todoView.tagName); // the literal tagName
+      });
+
+      it('View has an el(ement) property that is the DOM element', function() {
         
-        expect(tagName).toEqual(todoView.tagName)
+        // this is familiar, what is the tagName of the DOM element for this view?
+        var tagName = 'what is the html element tagName this view';
+
         expect(tagName).toEqual(todoView.el.tagName.toLowerCase());
+      });
+
+      it('View has todo model propert set when created', function() {
+        var todo = new Todo();
+
+        // how would you instantiate a view to have model set as a property?
+        
+        var todoView = undefined; // edit this line
+
+        expect(todoView.model).toBe(todo);
+      });
+
     });
     
-    it('Views are backed by a model instance, which provides the data when rendering the view.', function() {
+    it('Views can have custom methods you can call.', function() {
         // What method would you call on todoView to get this expectation to pass?
         // Hint: You can accomplish this without accessing todoView.model directly.
         
@@ -46,26 +68,12 @@ describe('About Backbone.View', function() {
         spyOn(todoView.model, 'toggle');
         
         // Render the <li> for the view, and append it to the <ul>
-        runs(function() {
-            $('#todoList').append(todoView.render().el);
-        });
+        $('#todoList').append(todoView.render().el);
         
-        // We use runs and waitsFor since this is an async process, and want to make
-        // sure we don't run our expectations until the view's markup is accessible in the DOM.
-        waitsFor(function() {
-            viewElt = $('#todoList li input.check').filter(':first');
-            
-            return viewElt.length > 0;
-        }, 1000, 'Expected DOM Elt to exist');
+        viewElt = $('#todoList li input.check').filter(':first');
         
-        // Make your changes within this function, you don't need to touch the code above.
-        runs(function() {
-            // Hint: How would you trigger the view, via a DOM Event, to toggle the 'done' status?
-            //       (See todos.js line 70, where the events hash is defined.)
-            //
-            // Hint: http://api.jquery.com/click
-            
-            expect(todoView.model.toggle).toHaveBeenCalled();
-        });
+        // trigger what event here?
+
+        expect(todoView.model.toggle).toHaveBeenCalled();
     });
 });
