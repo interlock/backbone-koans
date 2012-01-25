@@ -70,7 +70,8 @@
             "click .check"              : "toggleDone",
             "dblclick div.todo-text"    : "edit",
             "click span.todo-destroy"   : "clear",
-            "keypress .todo-input"      : "updateOnEnter"
+            "keypress .todo-input"      : "updateOnEnter",
+            "blur .todo-input"          : "close"
         },
 
         initialize: function() {
@@ -78,21 +79,23 @@
             this.model.bind('destroy', this.remove, this);
         },
 
+        template: _.template("<div class=\"todo <%= done ? \'done\' : \'\' %>\">" +
+          "<div class=\"display\">" +
+            "<input class=\"check\" type=\"checkbox\" <%= done ? \'checked=\"checked\"\' : \'\' %> />" +
+            "<div class=\"todo-text\"><%= text %></div>" +
+            "<span class=\"todo-destroy\"></span>" +
+          "</div>" +
+          "<div class=\"edit\">" +
+            "<input class=\"todo-input\" type=\"text\" value=\"<%= text %>\" />" +
+          "</div>" +
+        "</div>"),
         render: function() {
             var self = this;
             
-            $(self.el).empty().template(TEMPLATE_URL + '/templates/item.html', self.model.toJSON(), function() {
-                self.setText();
-            });
+            $(self.el).empty();
+            $(self.el).html(this.template(self.model.toJSON()));
             
             return this;
-        },
-
-        setText: function() {
-            var text = this.model.get('text');
-            this.$('.todo-text').text(text);
-            this.input = this.$('.todo-input');
-            this.input.bind('blur', _.bind(this.close, this)).val(text);
         },
 
         toggleDone: function() {
@@ -105,7 +108,7 @@
         },
 
         close: function() {
-            this.model.save({text: this.input.val()});
+            this.model.save({text: this.$('.todo-input').val()});
             $(this.el).removeClass("editing");
         },
 
