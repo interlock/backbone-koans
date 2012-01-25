@@ -7,7 +7,8 @@ describe('About Backbone.Model', function() {
     
     it('A Model can have default values for its attributes.', function() {
         var todo = new Todo();
-        
+          
+        // what are the default values for Todo? 
         var defaultAttrs = {
             text: 'What is the default value?',
             done : 'What is the default value?',
@@ -17,14 +18,18 @@ describe('About Backbone.Model', function() {
         expect(defaultAttrs).toEqual(todo.attributes);
     });
     
+
     it('Attributes can be set on the model instance when it is created.', function() {
         var todo = new Todo({ text: 'Get oil change for car.' });
         
+        // what should this model contain for "text"
         var expectedText = 'FIX ME';
         
         expect(expectedText).toEqual(todo.get('text'));
     });
     
+
+
     it('If it is exists, an initialize function on the model will be called when it is created.', function() {
         var todo = new Todo({ text: 'Stop monkeys from throwing their own feces!' });
         
@@ -35,17 +40,31 @@ describe('About Backbone.Model', function() {
         expect('Stop monkeys from throwing their own double rainbows!').toBe(todo.get('text'));
     });
     
-    it('Fires a custom event when the state changes.', function() {
-        var callback = jasmine.createSpy('-change event callback-');
-        
-        var todo = new Todo();
-        
+
+    describe('Default Model Events', function() {
+      var callback, todo;
+
+      beforeEach(function() {
+        callback = jasmine.createSpy('-change event callback-');
+        todo = new Todo();
+      });
+
+      it('Fires a custom event when the state changes.', function() { 
         todo.bind('change', callback);
         
         // How would you update a property on the todo here?
         // Hint: http://documentcloud.github.com/backbone/#Model-set
         
         expect(callback).toHaveBeenCalled();
+      });
+
+      it('Fires a specific custom event when a specific model attribute changes', function() {
+        todo.bind('change:order', callback);
+
+        // How would you update the property here?
+        expect(callback).toHaveBeenCalled();
+      });
+
     });
     
     it('Can contain custom validation rules, and will trigger an error event on failed validation.', function() {
@@ -60,8 +79,6 @@ describe('About Backbone.Model', function() {
         
         var errorArgs = errorCallback.mostRecentCall.args;
         
-        expect(errorArgs).toBeDefined();
-        expect(errorArgs[0]).toBe(todo);
         expect(errorArgs[1]).toBe('Todo.done must be a boolean value.');
     });
 });
